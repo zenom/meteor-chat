@@ -14,30 +14,35 @@
   </div>
   <div class="container">
     <div class='row'>
-      <h6>To get started enter a username below:</h6>
-      <br />
-      {{> choose_username}}
+      <div class="span12">
+        {{> choose_username}}
+      </div>
     </div>
     <div class='row'>
-      <div class='span4'>
-        <h6>Users List</h6>
+      <div class='span2'>
         {{> user_list}}
       </div>
-      <div class='span8'>{{> hello }}</div>
+      <div class='span10'>{{> hello }}</div>
     </div>
   </div>
 </body>
 
 <template name='user_list'>
-  <table class='table table-striped'>
-    <tbody>
-      {{#each users}}
-      <tr><td>{{this.name}}</td></tr>
-      {{/each}}
-  </table>
+  {{#if total_users }}
+    <h6>Users List</h6>
+    <table class='table table-striped'>
+      <tbody>
+        {{#each users}}
+        <tr><td>{{this.name}}</td></tr>
+        {{/each}}
+        </tbody>
+    </table>
+  {{/if}}
 </template>
 <template name='choose_username'>
   {{#unless username}}
+  <h6>To get started enter a username below:</h6>
+  <br />
   <form class='form-inline'>
     <input type='text' id='username' class='input-medium' placeholder='Username'/>
     <button type='submit' class='btn' id='create-username'>Create Username</button>
@@ -48,13 +53,18 @@
 <template name='hello'>
   {{#if username}}
   <h6>Welcome to Free Chat {{username}}</h6>
+  <form class='form-inline'>
+    <input type="text" id='chat-message' class='span6' placeholder='Input message'>
+    <input type='submit' id='send-message' class='btn btn-primary' value='Send Message'>
+  </form>
   <table class="table table-striped">
     <tbody>
       {{#each messages}}
         <tr>
-          <td><abbr class='timeago' title='{{this.timestamp}}'></abbr></td>
+          <td class="span3"><abbr class='timeago' title='{{this.timestamp}}'>{{this.timestamp}}</abbr></td>
+          <td class="span1"><strong>{{this.user}}:</strong></td>
           <td>{{this.message}}</td>
-          <td>{{this.user}}</td>
+        </tr>
       {{/each}}
       </tbody>
   </table>
