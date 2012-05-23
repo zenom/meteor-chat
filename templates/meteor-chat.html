@@ -1,13 +1,62 @@
 <head>
   <title>meteor-chat</title>
+  <link rel="stylesheet" href="meteor-chat.css" />
+  <script src="jquery.timeago.js" type="text/javascript"></script>
 </head>
 
 <body>
-  {{> hello}}
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="brand">Meteor Chat</a>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class='row'>
+      <h6>To get started enter a username below:</h6>
+      <br />
+      {{> choose_username}}
+    </div>
+    <div class='row'>
+      <div class='span4'>
+        <h6>Users List</h6>
+        {{> user_list}}
+      </div>
+      <div class='span8'>{{> hello }}</div>
+    </div>
+  </div>
 </body>
 
-<template name="hello">
-  <h1>Hello World!</h1>
-  {{greeting}}
-  <input type="button" class="btn btn-primary" value="Click" />
+<template name='user_list'>
+  <table class='table table-striped'>
+    <tbody>
+      {{#each users}}
+      <tr><td>{{this.name}}</td></tr>
+      {{/each}}
+  </table>
+</template>
+<template name='choose_username'>
+  {{#unless username}}
+  <form class='form-inline'>
+    <input type='text' id='username' class='input-medium' placeholder='Username'/>
+    <button type='submit' class='btn' id='create-username'>Create Username</button>
+  </form>
+  {{/unless}}
+</template>
+
+<template name='hello'>
+  {{#if username}}
+  <h6>Welcome to Free Chat {{username}}</h6>
+  <table class="table table-striped">
+    <tbody>
+      {{#each messages}}
+        <tr>
+          <td><abbr class='timeago' title='{{this.timestamp}}'></abbr></td>
+          <td>{{this.message}}</td>
+          <td>{{this.user}}</td>
+      {{/each}}
+      </tbody>
+  </table>
+  {{/if}}
 </template>
