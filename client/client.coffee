@@ -1,4 +1,3 @@
-# Already in client dir, so no is_client is needed.
 Template.choose_username.username = ->
   Session.get('username')
 
@@ -11,7 +10,8 @@ Template.choose_username.events =
       $('#username_exists').show();
     else
       Session.set('username', username)
-      People.insert({name: username})
+      now = new Date().getTime()
+      People.insert({name: username, idle: false, last_keepalive: now})
 
 Template.hello.username = ->
   Session.get('username')
@@ -27,7 +27,6 @@ Template.hello.events =
     timestamp = new Date
     Messages.insert({user: Session.get('username'), timestamp: timestamp, message: message})
     $('#chat-message').val('')
-    $('abbr.timeago').timeago()
 
 Template.user_list.total_users = ->
   People.find({}).fetch().length
@@ -35,6 +34,15 @@ Template.user_list.total_users = ->
 Template.user_list.users = ->
   People.find({}, {sort: {name: 1}})
 
+# Needs some work #
+update_idle = ->
+  now = new Date().getTime()
+  idle_threshold = now - 70 * 1000
+  remove_threshold = now * 30 * 30 * 1000
+  People.update({$lt: { last_keepalive: idle_threshold}}, {$set: {idle: true}})
+
+# update the idle status
+Meteor.setInterval update_idle, 30000
 
 jQuery ->
   $('abbr.timeago').timeago()
